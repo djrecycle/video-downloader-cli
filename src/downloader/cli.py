@@ -30,6 +30,7 @@ from yt_dlp import YoutubeDL
 
 DEFAULT_OUTPUT_TEMPLATE = "%(title).200B [%(id)s].%(ext)s"
 DEFAULT_VIDEO_FORMAT = "bv*[height<=1080][ext=mp4]+ba[ext=m4a]/bv*[height<=1080]+ba/b[height<=1080]/b"
+DEFAULT_DOWNLOAD_DIR = Path("downloads")
 
 console = Console(highlight=False)
 
@@ -90,7 +91,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "-o",
         "--output",
         type=Path,
-        default=Path("downloads"),
+        default=DEFAULT_DOWNLOAD_DIR,
         help="Folder tujuan download. Default: ./downloads",
     )
     parser.add_argument(
@@ -229,6 +230,28 @@ def prompt_urls_from_file() -> list[str]:
         return urls
 
 
+def sanitize_subfolder(name: str) -> str:
+    parts = [part for part in name.strip().split("/") if part not in ("", ".", "..")]
+    return "/".join(parts)
+
+
+def prompt_output_dir() -> Path:
+    console.print(f"[dim]Default: file hasil download masuk ke folder '{DEFAULT_DOWNLOAD_DIR}/'.[/dim]")
+    want_new_folder = Confirm.ask(
+        f"[bold blue]Buat folder baru di dalam '{DEFAULT_DOWNLOAD_DIR}/'[/bold blue]", default=False
+    )
+    if not want_new_folder:
+        return DEFAULT_DOWNLOAD_DIR
+
+    while True:
+        raw_name = Prompt.ask("[bold blue]Nama folder baru[/bold blue]")
+        folder_name = sanitize_subfolder(raw_name)
+        if not folder_name:
+            console.print("[yellow]Nama folder tidak boleh kosong.[/yellow]")
+            continue
+        return DEFAULT_DOWNLOAD_DIR / folder_name
+
+
 def run_interactive(defaults: argparse.Namespace) -> int:
     print_header()
     urls = prompt_url_source()
@@ -238,7 +261,7 @@ def run_interactive(defaults: argparse.Namespace) -> int:
 
     console.print()
     console.print("[bold]🛠️  Pengaturan download[/bold]")
-    output_dir = Path(Prompt.ask("[bold blue]Folder output[/bold blue]", default=str(defaults.output))).expanduser()
+    output_dir = prompt_output_dir()
     workers = IntPrompt.ask(
         "[bold blue]Jumlah download paralel (1-8)[/bold blue]", default=defaults.workers
     )
