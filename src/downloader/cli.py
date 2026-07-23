@@ -235,16 +235,29 @@ def sanitize_subfolder(name: str) -> str:
     return "/".join(parts)
 
 
+def list_existing_subfolders(base: Path) -> list[str]:
+    if not base.is_dir():
+        return []
+    return sorted(p.name for p in base.iterdir() if p.is_dir())
+
+
 def prompt_output_dir() -> Path:
     console.print(f"[dim]Default: file hasil download masuk ke folder '{DEFAULT_DOWNLOAD_DIR}/'.[/dim]")
     want_new_folder = Confirm.ask(
-        f"[bold blue]Buat folder baru di dalam '{DEFAULT_DOWNLOAD_DIR}/'[/bold blue]", default=False
+        f"[bold blue]Buat/pilih folder di dalam '{DEFAULT_DOWNLOAD_DIR}/'[/bold blue]", default=False
     )
     if not want_new_folder:
         return DEFAULT_DOWNLOAD_DIR
 
+    existing = list_existing_subfolders(DEFAULT_DOWNLOAD_DIR)
+    if existing:
+        console.print(f"[bold]📁 Folder yang sudah ada di '{DEFAULT_DOWNLOAD_DIR}/'[/bold]")
+        for folder_name in existing:
+            console.print(f"   [green]•[/green] {folder_name}")
+        console.print("[dim]Ketik salah satu nama di atas untuk pakai folder itu, atau nama baru untuk membuat folder baru.[/dim]")
+
     while True:
-        raw_name = Prompt.ask("[bold blue]Nama folder baru[/bold blue]")
+        raw_name = Prompt.ask("[bold blue]Nama folder[/bold blue]")
         folder_name = sanitize_subfolder(raw_name)
         if not folder_name:
             console.print("[yellow]Nama folder tidak boleh kosong.[/yellow]")
