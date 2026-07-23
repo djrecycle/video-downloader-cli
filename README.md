@@ -1,5 +1,17 @@
 # Video Downloader CLI
 
+```
+__   ___    _             ___                  _              _
+\ \ / (_)__| |___ ___ ___|   \ _____ __ ___ _ | |___  __ _ __| |___ _ _
+ \ V /| / _` / -_) _ \___| |) / _ \ V  V / ' \| / _ \/ _` / _` / -_) '_|
+  \_/ |_\__,_\___\___/   |___/\___/\_/\_/|_||_|_\___/\__,_\__,_\___|_|
+
+                              ___ _    ___
+                             / __| |  |_ _|
+                            | (__| |__ | |
+                             \___|____|___|
+```
+
 Aplikasi terminal interaktif untuk mendownload banyak video sekaligus. Fokus awal aplikasi ini adalah YouTube, dengan `yt-dlp` sebagai engine download.
 
 Tampilan aplikasi dibuat sebagai UI terminal utama: saat dijalankan tanpa argumen, aplikasi membuka menu interaktif; saat dijalankan dengan argumen atau file, aplikasi tetap memakai panel status dan ringkasan yang rapi.

@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from rich.align import Align
-from rich.console import Console
+from rich.console import Console, Group
 from rich.panel import Panel
 from rich.progress import (
     BarColumn,
@@ -31,6 +31,16 @@ from yt_dlp import YoutubeDL
 DEFAULT_OUTPUT_TEMPLATE = "%(title).200B [%(id)s].%(ext)s"
 DEFAULT_VIDEO_FORMAT = "bv*[height<=1080][ext=mp4]+ba[ext=m4a]/bv*[height<=1080]+ba/b[height<=1080]/b"
 DEFAULT_DOWNLOAD_DIR = Path("downloads")
+
+ASCII_LOGO = r"""__   ___    _             ___                  _              _
+\ \ / (_)__| |___ ___ ___|   \ _____ __ ___ _ | |___  __ _ __| |___ _ _
+ \ V /| / _` / -_) _ \___| |) / _ \ V  V / ' \| / _ \/ _` / _` / -_) '_|
+  \_/ |_\__,_\___\___/   |___/\___/\_/\_/|_||_|_\___/\__,_\__,_\___|_|
+
+                              ___ _    ___
+                             / __| |  |_ _|
+                            | (__| |__ | |
+                             \___|____|___|"""
 
 console = Console(highlight=False)
 
@@ -170,11 +180,11 @@ def print_help() -> None:
 
 
 def print_header() -> None:
-    banner = (
-        "[bold cyan]🎬 YOUTUBE DOWNLOADER[/bold cyan]\n"
-        "[dim]Download banyak video dari terminal, ditenagai yt-dlp[/dim]"
+    content = Group(
+        Align.center(f"[bold cyan]{ASCII_LOGO}[/bold cyan]"),
+        Align.center("[dim]🎬 Download banyak video dari terminal, ditenagai yt-dlp[/dim]"),
     )
-    console.print(Panel(Align.center(banner), box=box.DOUBLE, border_style="cyan", padding=(1, 4)))
+    console.print(Panel(content, box=box.DOUBLE, border_style="cyan", padding=(1, 2)))
 
 
 def info_panel(title: str, rows: list[tuple[str, str]], border_style: str = "cyan") -> None:
